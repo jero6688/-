@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>软件开发需求提交系统</title>
+    <title>需求系统</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>软件开发需求提交系统</h1>
+            <h1>需求系统</h1>
             <p>请填写您的需求详情并上传相关素材，我们将为您打包生成需求文件。</p>
         </header>
 
         <form id="requirementForm">
+            <!-- 项目信息 -->
+            <section class="form-section">
+                <h2>1. 项目信息</h2>
+                <div class="form-group">
+                    <label for="projectName">网站/系统名称</label>
+                    <input type="text" id="projectName" name="projectName" placeholder="给您的网站/系统起个名字，如：xxx电影网站、xxx宠物网站..." required>
+                </div>
+            </section>
+
             <!-- 需求详情 -->
             <section class="form-section">
-                <h2>1. 需求详情</h2>
+                <h2>2. 需求详情</h2>
                 
                 <div class="form-group file-upload" style="margin-bottom: 25px;">
                     <label for="reqDocFiles">需求文档上传 (可选)</label>
@@ -27,7 +36,7 @@
 
                 <div class="form-group">
                     <label for="requirementDesc">功能需求说明</label>
-                    <textarea id="requirementDesc" name="requirementDesc" rows="10" placeholder="请详细描述您的软件功能需求、业务流程、用户角色等... (若已上传文档，此处可简写或留空)"></textarea>
+                    <textarea id="requirementDesc" name="requirementDesc" rows="10" placeholder="请描述您的网站/系统功能需求、界面需求等（若已上传需求文档，此处可不填）"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="remark">备注说明</label>
@@ -37,16 +46,27 @@
 
             <!-- 素材上传 -->
             <section class="form-section">
-                <h2>2. 素材上传</h2>
+                <h2>3. 素材上传</h2>
                 <p class="hint">支持批量选择文件</p>
                 <div class="alert-box">
                     💡 <strong>温馨提示</strong>：为了确保图片与文案精准对应，建议您在上传前修改文件名（例如：<code>猫猫.jpg</code>、<code>饺子.jpg</code>），以便开发人员快速识别。
                 </div>
                 
                 <div class="form-group file-upload">
-                    <label for="imageFiles">图片素材 (Logo, Banner, 产品图等)</label>
-                    <input type="file" id="imageFiles" name="imageFiles" multiple accept="image/*">
+                    <label>图片素材 (Logo, Banner, 产品图等)</label>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <label for="imageFiles" style="display:inline-block; font-weight:normal; margin-right:10px;">📄 上传图片文件:</label>
+                        <input type="file" id="imageFiles" name="imageFiles" multiple accept="image/*">
+                    </div>
+
+                    <div>
+                        <label for="imageFolders" style="display:inline-block; font-weight:normal; margin-right:10px;">📂 上传图片文件夹:</label>
+                        <input type="file" id="imageFolders" name="imageFolders" webkitdirectory directory multiple>
+                    </div>
+
                     <div class="file-list" id="imageFilesList"></div>
+                    <div class="file-list" id="imageFoldersList"></div>
                 </div>
 
                 <div class="form-group file-upload">

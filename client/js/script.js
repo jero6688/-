@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 绑定文件选择显示逻辑
     bindFileDisplay('reqDocFiles', 'reqDocFilesList'); // 新增需求文档上传
     bindFileDisplay('imageFiles', 'imageFilesList');
+    bindFileDisplay('imageFolders', 'imageFoldersList'); // 新增图片文件夹上传
     bindFileDisplay('refFiles', 'refFilesList');
     bindFileDisplay('videoFiles', 'videoFilesList');
     bindFileDisplay('audioFiles', 'audioFilesList');
@@ -38,6 +39,16 @@ function formatSize(bytes) {
 }
 
 async function handleGenerate() {
+    // 0. 基础校验
+    const projectNameInput = document.getElementById('projectName');
+    const projectName = projectNameInput.value.trim();
+    
+    if (!projectName) {
+        alert('请填写【网站/系统名称】！');
+        projectNameInput.focus();
+        return;
+    }
+
     const btn = document.getElementById('generateBtn');
     const originalText = btn.textContent;
     btn.disabled = true;
@@ -48,11 +59,11 @@ async function handleGenerate() {
 
         // 1. 获取表单数据并生成需求文档
         const formData = {
+            projectName: projectName,
             requirementDesc: document.getElementById('requirementDesc').value || '无',
             remark: document.getElementById('remark').value || '无'
         };
 
-        const projectName = "需求包"; // 默认名称
         const submitTime = new Date().toLocaleString();
 
         // 生成 HTML 内容用于转换为 Word
@@ -61,7 +72,7 @@ async function handleGenerate() {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>需求文档</title>
+                <title>${formData.projectName} - 需求文档</title>
                 <style>
                     body { font-family: 'SimSun', '宋体', serif; line-height: 1.6; }
                     h1 { text-align: center; color: #333; }
@@ -72,7 +83,7 @@ async function handleGenerate() {
                 </style>
             </head>
             <body>
-                <h1>需求说明书</h1>
+                <h1>${formData.projectName} - 需求说明书</h1>
                 
                 <p><strong>提交时间：</strong>${submitTime}</p>
 
@@ -91,7 +102,7 @@ async function handleGenerate() {
 
         // 生成 Markdown 内容 (作为备份)
         const mdContent = `
-# 需求说明书
+# ${formData.projectName} - 需求说明书
 
 **提交时间**：${submitTime}
 
@@ -116,29 +127,34 @@ ${formData.remark}
         zip.file(`需求说明书.md`, mdContent);
 
         // 2. 处理上传的文件
-        const folders = {
-            '需求文档': 'reqDocFiles',
-            '图片素材': 'imageFiles',
-            '参考图': 'refFiles',
-            '视频素材': 'videoFiles',
-            '音频素材': 'audioFiles',
-            '其他文档': 'docFiles'
-        };
+        const fileMappings = [
+            { zipFolder: '需求文档', inputId: 'reqDocFiles' },
+            { zipFolder: '图片素材', inputId: 'imageFiles' },
+            { zipFolder: '图片素材', inputId: 'imageFolders' },
+            { zipFolder: '参考图', inputId: 'refFiles' },
+            { zipFolder: '视频素材', inputId: 'videoFiles' },
+            { zipFolder: '音频素材', inputId: 'audioFiles' },
+            { zipFolder: '其他文档', inputId: 'docFiles' }
+        ];
 
-        for (const [folderName, inputId] of Object.entries(folders)) {
-            const input = document.getElementById(inputId);
-            if (input.files.length > 0) {
-                const folder = zip.folder(folderName);
+        for (const mapping of fileMappings) {
+            const input = document.getElementById(mapping.inputId);
+            if (input && input.files.length > 0) {
+                const folder = zip.folder(mapping.zipFolder);
                 for (let i = 0; i < input.files.length; i++) {
                     const file = input.files[i];
-                    folder.file(file.name, file);
+                    // 处理 webkitRelativePath 以保留文件夹结构
+                    // 普通文件上传 webkitRelativePath 通常为空，直接使用 file.name
+                    // 文件夹上传 webkitRelativePath 为 "folder/subfolder/file.ext"
+                    const fileNameInZip = file.webkitRelativePath || file.name;
+                    folder.file(fileNameInZip, file);
                 }
             }
         }
 
         // 3. 生成并下载 ZIP
         const content = await zip.generateAsync({type: "blob"});
-        const fileName = `需求包_${formatDate(new Date())}.zip`;
+        const fileName = `${formData.projectName}_需求包_${formatDate(new Date())}.zip`;
         saveAs(content, fileName);
 
         alert('打包成功！文件已开始下载。');
