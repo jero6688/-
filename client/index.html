@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>软件开发需求提交系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>软件开发需求提交系统</h1>
+            <p>请填写您的需求详情并上传相关素材，我们将为您打包生成需求文件。</p>
+        </header>
+
+        <form id="requirementForm">
+            <!-- 需求详情 -->
+            <section class="form-section">
+                <h2>1. 需求详情</h2>
+                
+                <div class="form-group file-upload" style="margin-bottom: 25px;">
+                    <label for="reqDocFiles">需求文档上传 (可选)</label>
+                    <p class="hint">如果您已有整理好的需求文档 (Word/PDF/Excel等)，可直接在此上传，无需重复填写下方文字说明。</p>
+                    <input type="file" id="reqDocFiles" name="reqDocFiles" multiple>
+                    <div class="file-list" id="reqDocFilesList"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="requirementDesc">功能需求说明</label>
+                    <textarea id="requirementDesc" name="requirementDesc" rows="10" placeholder="请详细描述您的软件功能需求、业务流程、用户角色等... (若已上传文档，此处可简写或留空)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="remark">备注说明</label>
+                    <textarea id="remark" name="remark" rows="4" placeholder="如有其他补充说明，请在此填写..."></textarea>
+                </div>
+            </section>
+
+            <!-- 素材上传 -->
+            <section class="form-section">
+                <h2>2. 素材上传</h2>
+                <p class="hint">支持批量选择文件</p>
+                <div class="alert-box">
+                    💡 <strong>温馨提示</strong>：为了确保图片与文案精准对应，建议您在上传前修改文件名（例如：<code>猫猫.jpg</code>、<code>饺子.jpg</code>），以便开发人员快速识别。
+                </div>
+                
+                <div class="form-group file-upload">
+                    <label for="imageFiles">图片素材 (Logo, Banner, 产品图等)</label>
+                    <input type="file" id="imageFiles" name="imageFiles" multiple accept="image/*">
+                    <div class="file-list" id="imageFilesList"></div>
+                </div>
+
+                <div class="form-group file-upload">
+                    <label for="refFiles">参考页面截图</label>
+                    <input type="file" id="refFiles" name="refFiles" multiple accept="image/*">
+                    <div class="file-list" id="refFilesList"></div>
+                </div>
+
+                <div class="form-group file-upload">
+                    <label for="videoFiles">视频素材</label>
+                    <input type="file" id="videoFiles" name="videoFiles" multiple accept="video/*">
+                    <div class="file-list" id="videoFilesList"></div>
+                </div>
+
+                <div class="form-group file-upload">
+                    <label for="audioFiles">音频素材</label>
+                    <input type="file" id="audioFiles" name="audioFiles" multiple accept="audio/*">
+                    <div class="file-list" id="audioFilesList"></div>
+                </div>
+
+                <div class="form-group file-upload">
+                    <label for="docFiles">其他文档 (Word, PDF, Excel等)</label>
+                    <input type="file" id="docFiles" name="docFiles" multiple>
+                    <div class="file-list" id="docFilesList"></div>
+                </div>
+            </section>
+
+            <!-- 提交操作 -->
+            <div class="form-actions">
+                <button type="button" id="generateBtn" class="primary-btn">保存并导出需求包</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 引入库文件 -->
+    <script src="lib/jszip.min.js"></script>
+    <script src="lib/FileSaver.min.js"></script>
+    <script src="lib/html-docx.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
